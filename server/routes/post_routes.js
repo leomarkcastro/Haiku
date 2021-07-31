@@ -120,7 +120,7 @@ router.get('/posts',
         let count = Number(params.count || "10")
         let id = params.user || ""
 
-        if (!db_idcheck(id)){
+        if (id.length > 0 && !db_idcheck(id)){
             res_clienterror(res, "Owner does not Exist")
         }
 
