@@ -27,5 +27,11 @@
             "iconColour": "skyblue",
             "gutterIcon": true
         },
+        "uwu": {
+            "foreground": "gray",
+            "background": "black",
+            "iconColour": "pink",
+            "gutterIcon": true
+        },
     }
 }

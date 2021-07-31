@@ -1,9 +1,8 @@
-require('dotenv').config()
-
 const multer = require("multer")
 const path = require("path")
+const express = require("express")
 
-// TODO Set this up for appropriate use later
+// TODO : Set this up for appropriate use later
 
 const storage = multer.diskStorage({
     destination : (req, file, cb) => {
@@ -27,4 +26,8 @@ const upload = multer({
     limits: {fileSize: '30mb'},
 })
 
-module.exports = upload
+
+exports.multerService = upload
+exports.request_simpleForm = () => (upload.fields([]))
+exports.request_urlencoded = () => express.urlencoded({extended:false})
+exports.request_json = () => express.json()

@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 // We load Winston - our logging engine
 const winston = require('winston')
 
@@ -33,7 +31,6 @@ var dailyrotate = new winston.transports.DailyRotateFile({
 });
 
 // We add the transports to our logger here.
-// TODO Add transport selections here based on type of environment
 
 //   First added is a console output
 logger.add(new winston.transports.Console({
@@ -52,7 +49,7 @@ if (process.env.LOG_UNHANDLED == "true") {
         if (err) {
             
             // WARNING This section is heavily sensitive. This is the section that is suppose to provide the error. If you made an error in this section, you can't detect it.
-            // FIXME This could be an issue later in production. Have to optimize this section better.
+            // FIXME : This could be an issue later in production. Have to optimize this section better.
 
             logger.error(new LoggerError("Unhandled Error Exception. Server Shutted Down", err.stack))
 

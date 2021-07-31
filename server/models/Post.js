@@ -4,7 +4,7 @@ const Post = mongoose.Schema({
     "Content" : {
         type: String,
         required: [true, "Post should contain something"],
-        maxLength: [50, "Is this even a haiku?"]
+        maxLength: [100, "Is this even a haiku?"]
     },
     "owner_id": {
         type: mongoose.Schema.Types.ObjectId,

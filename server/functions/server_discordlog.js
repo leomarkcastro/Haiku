@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 // We import the Discord Node Loggger
 const DiscordLogger = require('node-discord-logger');
 const os = require('os')

@@ -70,27 +70,27 @@ for this project.
 
   - [x] Setup Multer
 
-- [ ] **BACKEND Accounts and Authentication**
+- [x] **BACKEND Accounts and Authentication**
   
   - [x] *Create an API Route to send requests of account creation*
    - [x] This should return a success or fail status
 
-  - [ ] *Create an API Route to receive request for login*
-    - [ ] Login through checking the database server
-    - [ ] Return a token tag when login is success
+  - [x] *Create an API Route to receive request for login*
+    - [x] Login through checking the database server
+    - [x] Return a token tag when login is success
 
-  - [ ] Create a dev route to read JWT tokens
+  - [x] Create a dev route to read JWT tokens
   
-- [ ] **BACKEND Post Making and Viewing**
+- [x] **BACKEND Post Making and Viewing**
 
-  - [ ] *Create a route that will receive form data*
-    - [ ] Store the form data in a Post Class and the User Posts List
+  - [x] *Create a route that will receive form data*
+    - [x] Store the form data in a Post Class and the User Posts List
 
-  - [ ] Create a route that will delete post by ID
+  - [x] Create a route that will delete post by ID
 
-  - [ ] Create a route that will update post data by ID
+  - [x] Create a route that will update post data by ID
   
-  - [ ] Create a route that will return the latest posts
+  - [x] Create a route that will return the latest posts
 
 
 - [ ] **FRONTEND Core**
