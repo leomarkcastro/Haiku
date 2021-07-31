@@ -1,0 +1,1 @@
+mongod --port 3456 --dbpath /data/haiku1 --replSet HaikuDB

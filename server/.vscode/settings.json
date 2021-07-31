@@ -1,0 +1,31 @@
+{
+    "todo-tree.tree.showBadges": false,
+    "todo-tree.tree.disableCompactFolders": true,
+    "todo-tree.highlights.useColourScheme": true,
+    "todo-tree.regex.regex": "(//)\\s*($TAGS).*(\\n\\s*//\\s{2,}.*)*",
+    "todo-tree.highlights.defaultHighlight": {
+        "icon": "alert",
+        "type": "text",
+        "foreground": "red",
+        "background": "white",
+        "opacity": 50,
+        "iconColour": "blue"
+    },
+    "todo-tree.highlights.customHighlight": {
+        "TODO": {
+            "icon": "check",
+            "type": "line",
+            "gutterIcon": true
+        },
+        "FIXME": {
+            "foreground": "black",
+            "iconColour": "yellow",
+            "gutterIcon": true
+        },
+        "!!!": {
+            "foreground": "black",
+            "iconColour": "skyblue",
+            "gutterIcon": true
+        },
+    }
+}

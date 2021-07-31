@@ -1,0 +1,1 @@
+mongod --auth  --keyFile "C:/Program Files/MongoDB/Server/5.0/bin/mongodb.key" --port 4567 --dbpath /data/haiku2 --replSet HaikuDB
