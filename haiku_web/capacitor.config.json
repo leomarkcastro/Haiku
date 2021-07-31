@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "haiku_web",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}

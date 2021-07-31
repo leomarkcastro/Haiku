@@ -1,0 +1,7 @@
+{
+  "name": "haiku_web",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
