@@ -47,7 +47,7 @@ exports.rootFolder = rootFolder
 exports.logger = LoggerMain
 exports.connect = function(port=null){
     mongoose.connect(
-        `mongodb://${process.env.DB_ADDRESS}/${process.env.DB_COLLECTION}?${process.env.DB_SETTINGS}`, 
+        `${process.env.DB_ADDRESS}/${process.env.DB_COLLECTION}?${process.env.DB_SETTINGS}`, 
         { 
             useNewUrlParser: true, 
             useUnifiedTopology: true,
