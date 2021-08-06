@@ -6,6 +6,7 @@ const express = require("express") // Main App Server
 const mongoose = require("mongoose") // Database Connector
 const passport = require("passport") // Authenticator System
 const cors = require("cors") // Allows access of our server from different address. Only enforced by Web Browsers tho.
+const rateLimit = require("express-rate-limit") // Rate limits the API request of IP
 
 // Root folder location
 const rootFolder = path.dirname(require.main.filename)
@@ -38,6 +39,19 @@ app.use(cors({
         
     }
 }))
+
+// Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+// see https://expressjs.com/en/guide/behind-proxies.html
+// app.set('trust proxy', 1);
+
+// We limit the request to 100 per 15 minutes
+const limiter = rateLimit({
+    windowMs: Number(process.env.RATE_MINUTES) * 60 * 1000, // 15 minutes
+    max: Number(process.env.RATE_REQUESTS) // limit each IP to 100 requests per windowMs
+  });
+
+//  apply to all requests
+app.use(limiter);
 
 // CHECK : this might be error prone or not scalable
 app.use('/files/image', express.static(`${rootFolder}/Files/profile_image`))

@@ -15,6 +15,7 @@ This would try to implement a full stack MERN website.
    - We use **bcrypt** to *hash and verify* our password of users.
    - We would use *environment variables via .env files*. (Implemented by
      **dotenv**)
+   - We use **express-rate-limiter** to avoid users on spamming requests 
 
  - **Ionic** would serve as a React framework for the *Front-End Website*
    - **Axios** would be used to *initiate requests* between the client and the
