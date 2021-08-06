@@ -47,8 +47,9 @@ app.use(cors({
 // We limit the request to 100 per 15 minutes
 const limiter = rateLimit({
     windowMs: Number(process.env.RATE_MINUTES) * 60 * 1000, // 15 minutes
-    max: Number(process.env.RATE_REQUESTS) // limit each IP to 100 requests per windowMs
-  });
+    max: Number(process.env.RATE_REQUESTS), // limit each IP to 100 requests per windowMs
+    message : process.env.RATE_MESSAGE
+});
 
 //  apply to all requests
 app.use(limiter);
