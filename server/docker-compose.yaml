@@ -1,0 +1,88 @@
+version: "3.0"
+
+volumes:
+  haikuDB-mongo-keys:
+  
+  haikuDB-mongo-data-0:
+  haikuDB-mongo-data-1:
+  haikuDB-mongo-data-2: 
+  # Or maybe just bind some file system on the computer
+
+networks:
+  haikuDB-dbnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.5.0/24
+
+services:
+
+  server:
+    image: api-server
+    volumes:
+      - ./Files_image:/usr/src/app/Files
+    stdin_open: true
+    ports: 
+      - "7654:7654"
+    networks:
+      - haikuDB-dbnet
+    depends_on: 
+      - haikuDB-mongo-primary
+      - haikuDB-mongo-worker-2
+      - haikuDB-mongo-worker-1
+
+  haikuDB-mongo-keys:
+    image: depop/openssl-bats
+    volumes:
+      - haikuDB-mongo-keys:/mongo-conf
+    command: 'bash -c "openssl rand -base64 741 > /mongo-conf/mongodb-keyfile; chmod 600 /mongo-conf/mongodb-keyfile; chown 999 /mongo-conf/mongodb-keyfile"'
+
+  # Primary
+  haikuDB-mongo-primary:
+    image: mongo:latest
+    volumes:
+      - haikuDB-mongo-keys:/opt/keyfile
+      - haikuDB-mongo-data-0:/data/db
+    env_file:
+      ./mongod.env
+    ports:
+      - 2345:27017
+    stdin_open: false
+    command: 'mongod --auth --keyFile /opt/keyfile/mongodb-keyfile --replSet haikuDB-replica-set'
+    depends_on:
+        - haikuDB-mongo-keys
+    networks:
+      haikuDB-dbnet:
+  
+  # Worker 1
+  haikuDB-mongo-worker-1:
+    image: mongo:latest
+    volumes:
+      - haikuDB-mongo-keys:/opt/keyfile
+      - haikuDB-mongo-data-1:/data/db
+    env_file:
+      ./mongod.env
+    stdin_open: false
+    command: 'mongod --auth --keyFile /opt/keyfile/mongodb-keyfile --replSet haikuDB-replica-set'
+    depends_on:
+        - haikuDB-mongo-keys
+        - haikuDB-mongo-primary
+    networks:
+      haikuDB-dbnet:
+  
+  # Worker 2
+  haikuDB-mongo-worker-2:
+    image: mongo:latest
+    volumes:
+      - haikuDB-mongo-keys:/opt/keyfile
+      - haikuDB-mongo-data-2:/data/db
+    env_file:
+      ./mongod.env
+    command: 'mongod --auth --keyFile /opt/keyfile/mongodb-keyfile --replSet haikuDB-replica-set'
+    depends_on:
+        - haikuDB-mongo-keys
+        - haikuDB-mongo-primary
+    networks:
+      haikuDB-dbnet:
+  
