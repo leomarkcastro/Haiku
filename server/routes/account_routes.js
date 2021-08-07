@@ -77,7 +77,7 @@ router.post("/user/create",
                 return res.status(400).json({"Error" : "More than One Profile was Imaged"})
             } else if (err) {
                 // An unknown error occurred when uploading.
-                next(error)
+                next(err)
             }
             
             // Everything went fine.

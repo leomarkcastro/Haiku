@@ -67,7 +67,7 @@ exports.connect = function(port=null){
             useNewUrlParser: true, 
             useUnifiedTopology: true,
             useCreateIndex: true,
-            retryWrites: false,
+            //retryWrites: false,
         }
     )
     .then( result => {
