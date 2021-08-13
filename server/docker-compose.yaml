@@ -21,7 +21,7 @@ services:
   server:
     image: api-server
     volumes:
-      - ./Files_image:/usr/src/app/Files
+      - ./Files_container:/usr/src/app/Files
     stdin_open: true
     ports: 
       - "7654:7654"

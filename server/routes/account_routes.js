@@ -65,7 +65,7 @@ router.get("/user/secret",
 router.post("/user/create", 
     async (req, res, next) => {
         
-        // CHECK : Does this look good
+        // CHECK : Does this look good? You only did this for the error alert
         multerService.fields([
             {
                 name: "profile_img",

@@ -7,10 +7,12 @@ const { logger , model : LoggerModel } = require("./functions/server_logging")
 // We import the routes here
 const post_routes = require("./routes/post_routes")
 const account_routes = require("./routes/account_routes")
+const file_routes = require("./routes/file_routes")
 
 //app.use(testRoutes)
 app.use('/api', account_routes)
 app.use('/api', post_routes)
+app.use('/api', file_routes)
 
 // TODO : Change this later
 app.use("*", (req, res) => {

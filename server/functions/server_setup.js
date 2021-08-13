@@ -11,6 +11,9 @@ const rateLimit = require("express-rate-limit") // Rate limits the API request o
 // Root folder location
 const rootFolder = path.dirname(require.main.filename)
 
+// We initialize the database connection
+const database = require("./server_database")
+
 // We initialize the logger here
 const LoggerMain = require("./server_logging")
 const logger = LoggerMain.logger
@@ -54,28 +57,62 @@ const limiter = rateLimit({
 //  apply to all requests
 app.use(limiter);
 
+let gfs;
+
 // CHECK : this might be error prone or not scalable
-app.use('/files/image', express.static(`${rootFolder}/Files/profile_image`))
+switch (process.env.FILE_SAVE_METHOD){
+    case 'DB':
+        app.get('/file/:filename', (req, res) => {
+            if (gfs){
+                gfs.find({filename : req.params.filename }).toArray((err, files) => {
+                    if (!files[0] || files.length === 0){
+                        return res.status(200).json({
+                            success: false,
+                            message: 'No files available'
+                        })
+                    }
+
+                    if(files[0].contentType === "image/jpeg" ||
+                        files[0].contentType === "image/png" ||
+                        files[0].contentType === "image/svg+xml" ||
+                        true
+                    ){
+                        gfs.openDownloadStreamByName(req.params.filename).pipe(res)
+                    } else{
+                        res.status(404).json({
+                            err: "Not an Image"
+                        })
+                    }
+                })
+            } else{
+                console.log("gfs not initiated yet")
+            }
+        })
+        break;
+    case 'STORAGE':
+        app.use('/file', express.static(`${rootFolder}/${process.env.FILE_SAVE_LOCATION_STORAGE}`))
+        break;
+}
+app.use('/file', (req,res)=>{res.send("File Not Found")})
+
 
 exports.app = app
 exports.rootFolder = rootFolder
 exports.logger = LoggerMain
-exports.connect = function(port=null){
-    mongoose.connect(
-        `${process.env.DB_ADDRESS}/${process.env.DB_COLLECTION}?${process.env.DB_SETTINGS}`, 
-        { 
-            useNewUrlParser: true, 
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            //retryWrites: false,
+exports.connect = async (port=null) => {
+    if (await database.connection){
+        console.log(` ✓ Connected through local port [${port || process.env.PORT}]`)
+
+        if (process.env.FILE_SAVE_METHOD === 'DB'){
+            const conn = mongoose.connection;
+            gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+                bucketName: process.env.FILE_SAVE_LOCATION_DB.replace(" ","__")
+            })
+            // FIXME: Avoid using global variables. This is shitty.
+            global.gfs = gfs
+            console.log(` ✓ Connected GridFS through local port [${port || process.env.DB_ADDRESS}]`)
         }
-    )
-    .then( result => {
-        console.log(`Connected Database through local port address(es) [${process.env.DB_ADDRESS}]`)
-        console.log(`Connected through local port [${port || process.env.PORT}]`)
+        
         app.listen(port || process.env.PORT)
-    })
-    .catch (err => {
-        console.log(err)
-    })
+    }
 }

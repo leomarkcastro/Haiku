@@ -1,6 +1,8 @@
 const fs= require("fs")
 const bcrypt = require("bcrypt")
+const mongoose = require("mongoose")
 const Models = require("../models/ModelBundle")
+const { gfs } = require('./server_setup')
 
 module.exports = async (data, profile_image) => {
     let account_template = {
@@ -31,15 +33,33 @@ module.exports = async (data, profile_image) => {
     return {
         new_account,
         callback_fail : () => {
-            if (data.profile_img){
-                fs.unlinkSync(data.profile_img.path, (err) => {
-                    if (err) {
-                        console.log("unlink failed", err);
-                    } else {
-                        console.log("file deleted");
+            switch(process.env.FILE_SAVE_METHOD){
+                case 'DB':
+                    global.gfs.delete( new mongoose.Types.ObjectId(data.profile_img.id), (err,data)=>{
+                        if(err){
+                            console.log(err)
+                        }
+                        else{
+                            // TODO : Delete This is Production
+                            console.log("image_deleted")
+                        }
+                    } )
+                    break;
+                case 'STORAGE':
+                    if (data.profile_img){
+                        fs.unlinkSync(data.profile_img.path, (err) => {
+                            
+                            // TODO : Delete This is Production
+                            if (err) {
+                                console.log("unlink failed", err);
+                            } else {
+                                console.log("file deleted");
+                            }
+                        })
                     }
-                })
+                    break;
             }
+            
         },
         callback_error : (err) => {
             let errList = {}
