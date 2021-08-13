@@ -184,15 +184,23 @@ with open(f"{output_location}/todo.txt", 'w+') as f:
         To Use In Scripts:
         mongodb://{bin_user}:{bin_pass}@localhost:{mongodb_port}/{bin_name}?authSource={bin_name}&replicaSet={cluster_name}&readPreference=primary&directConnection=true&ssl=false
 
-        Link : mongodb://{bin_user}:{bin_pass}@localhost:{mongodb_port}
-        Collection: {bin_name}
-        Settings: authSource={bin_name}&replicaSet={cluster_name}&readPreference=primary&directConnection=true&ssl=false
+        DB_ADDRESS = mongodb://{bin_user}:{bin_pass}@localhost:{mongodb_port}
+        DB_COLLECTION = {bin_name}
+        DB_SETTINGS = authSource={bin_name}&replicaSet={cluster_name}&readPreference=primary&directConnection=true&ssl=false
 
         --------------------------------------------------------
+
+        To Use inside Containers:
+
+        DB_ADDRESS = mongodb://{bin_user}:{bin_pass}@{','.join(f'{mongodb_name}-{i}:27017' for i in ['primary'] + [f'worker-{j+1}' for j in range(cluster_amount-1)])}
+
+        DB_COLLECTION = {bin_name}
+        DB_SETTINGS = authSource={bin_name}&replicaSet={cluster_name}&readPreference=primary
 
     """
     print(x.replace("        ",""), file=f)
     print("> Succesfully Generated [todo.txt]")
 
 
+input("MongoDB Container Generated")
 

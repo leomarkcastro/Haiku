@@ -1,0 +1,48 @@
+
+--------------------------------------------------------
+Type this on the console:
+
+docker-compose up -d
+
+docker-compose exec haikuDB-primary mongo -u "root" -p "password"
+
+--------------------------------------------------------
+Type this on mongosh:
+rs.initiate({"_id": "haikuDBrS", "members": [{"_id": 0, "host": "haikuDB-primary:27017"}, {"_id": 1, "host": "haikuDB-worker-1"}, {"_id": 2, "host": "haikuDB-worker-2"}]});
+
+# Wait for the current mongodb to be Primary, else the command below might fail
+conf = rs.config();
+conf.members[0].priority = 2;
+rs.reconfig(conf);
+
+use admin;
+db.createUser({"user": "cluster_admin", "pwd": "password", "roles": [{"role": "userAdminAnyDatabase", "db": "admin"}, {"role": "clusterAdmin", "db": "admin"}]});
+db.auth("cluster_admin", "password");
+
+use my_data;
+db.createUser({"user": "my_user", "pwd": "password", "roles": [{"role": "readWrite", "db": "my_data"}]});
+
+--------------------------------------------------------
+
+To Log In mongosh:
+docker-compose exec haikuDB-primary mongo -u "my_user" -p "password" --authenticationDatabase my_data
+
+--------------------------------------------------------
+
+To Use In Scripts:
+mongodb://my_user:password@localhost:2345/my_data?authSource=my_data&replicaSet=haikuDBrS&readPreference=primary&directConnection=true&ssl=false
+
+DB_ADDRESS : mongodb://my_user:password@localhost:2345
+DB_COLLECTION: my_data
+DB_SETTINGS: authSource=my_data&replicaSet=haikuDBrS&readPreference=primary&directConnection=true&ssl=false
+
+--------------------------------------------------------
+
+To Use inside Containers:
+
+DB_ADDRESS = mongodb://my_user:password@haikuDB-primary:27017,haikuDB-worker-1:27017,haikuDB-worker-2:27017
+
+DB_COLLECTION = my_data
+DB_SETTINGS = authSource=my_data&replicaSet=haikuDBrS&readPreference=primary
+
+    

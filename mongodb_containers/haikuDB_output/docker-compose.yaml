@@ -1,0 +1,56 @@
+networks:
+  haikuDB-network:
+    driver: bridge
+services:
+  haikuDB-keys:
+    command: bash -c "openssl rand -base64 741 > /mongo-conf/mongodb-keyfile; chmod
+      600 /mongo-conf/mongodb-keyfile; chown 999 /mongo-conf/mongodb-keyfile"
+    image: depop/openssl-bats
+    volumes:
+    - haikuDB-keys:/mongo-conf
+  haikuDB-primary:
+    command: mongod --auth --keyFile /opt/keyfile/mongodb-keyfile --replSet haikuDBrS
+    depends_on:
+    - haikuDB-keys
+    env_file: ./mongod.env
+    image: mongo:latest
+    networks:
+      haikuDB-network: null
+    ports:
+    - 2345:27017
+    stdin_open: false
+    volumes:
+    - haikuDB-keys:/opt/keyfile
+    - haikuDB-data-0:/data/db
+  haikuDB-worker-1:
+    command: mongod --auth --keyFile /opt/keyfile/mongodb-keyfile --replSet haikuDBrS
+    depends_on:
+    - haikuDB-keys
+    - haikuDB-primary
+    env_file: ./mongod.env
+    image: mongo:latest
+    networks:
+      haikuDB-network: null
+    stdin_open: false
+    volumes:
+    - haikuDB-keys:/opt/keyfile
+    - haikuDB-data-1:/data/db
+  haikuDB-worker-2:
+    command: mongod --auth --keyFile /opt/keyfile/mongodb-keyfile --replSet haikuDBrS
+    depends_on:
+    - haikuDB-keys
+    - haikuDB-primary
+    env_file: ./mongod.env
+    image: mongo:latest
+    networks:
+      haikuDB-network: null
+    stdin_open: false
+    volumes:
+    - haikuDB-keys:/opt/keyfile
+    - haikuDB-data-2:/data/db
+version: '3.0'
+volumes:
+  haikuDB-data-0: null
+  haikuDB-data-1: null
+  haikuDB-data-2: null
+  haikuDB-keys: null
